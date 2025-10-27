@@ -3,8 +3,8 @@ package protocol_test
 import (
 	"testing"
 
-	. "github.com/xtls/xray-core/common/protocol"
-	"github.com/xtls/xray-core/common/uuid"
+	. "github.com/mrst2000/Xray-core/common/protocol"
+	"github.com/mrst2000/Xray-core/common/uuid"
 )
 
 func TestIdEquals(t *testing.T) {

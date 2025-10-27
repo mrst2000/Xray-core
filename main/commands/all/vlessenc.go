@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xtls/xray-core/main/commands/base"
+	"github.com/mrst2000/Xray-core/main/commands/base"
 )
 
 var cmdVLESSEnc = &base.Command{

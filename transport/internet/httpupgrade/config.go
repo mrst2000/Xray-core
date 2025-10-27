@@ -1,8 +1,8 @@
 package httpupgrade
 
 import (
-	"github.com/xtls/xray-core/common"
-	"github.com/xtls/xray-core/transport/internet"
+	"github.com/mrst2000/Xray-core/common"
+	"github.com/mrst2000/Xray-core/transport/internet"
 )
 
 func (c *Config) GetNormalizedPath() string {
