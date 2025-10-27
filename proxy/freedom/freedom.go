@@ -1,10 +1,14 @@
 package freedom
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"io"
+	mathrand "math/rand"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/pires/go-proxyproto"
 	"github.com/xtls/xray-core/common"
@@ -188,6 +192,7 @@ func (h *Handler) Process(ctx context.Context, link *transport.Link, dialer inte
 			} else {
 				writer = buf.NewWriter(conn)
 			}
+			writer = &HTTPHeaderRandomizingWriter{writer: writer}
 		} else {
 			writer = NewPacketWriter(conn, h, UDPOverride, destination)
 			if h.config.Noises != nil {
@@ -576,4 +581,58 @@ func GenerateRandomBytes(n int64) ([]byte, error) {
 	}
 
 	return b, nil
+}
+
+func randomizeCase(s string) string {
+	mathrand.Seed(time.Now().UnixNano())
+	r := []rune(s)
+	for i := range r {
+		if mathrand.Intn(2) == 0 {
+			r[i] = unicode.ToUpper(r[i])
+		} else {
+			r[i] = unicode.ToLower(r[i])
+		}
+	}
+	return string(r)
+}
+
+func randomizeHTTPHeaderKeys(b []byte) []byte {
+	headersEnd := bytes.Index(b, []byte("\r\n\r\n"))
+	if headersEnd == -1 {
+		return b // Not a valid HTTP message, return as is
+	}
+
+	headers := b[:headersEnd]
+	body := b[headersEnd:]
+
+	lines := bytes.Split(headers, []byte("\r\n"))
+	for i, line := range lines {
+		if i == 0 {
+			// Skip the request/status line
+			continue
+		}
+		parts := bytes.SplitN(line, []byte(":"), 2)
+		if len(parts) == 2 {
+			key := parts[0]
+			value := parts[1]
+			randomizedKey := randomizeCase(string(key))
+			randomizedValue := randomizeCase(string(value))
+			lines[i] = []byte(randomizedKey + ":" + randomizedValue)
+		}
+	}
+
+	return append(bytes.Join(lines, []byte("\r\n")), body...)
+}
+
+type HTTPHeaderRandomizingWriter struct {
+	writer buf.Writer
+}
+
+func (w *HTTPHeaderRandomizingWriter) WriteMultiBuffer(mb buf.MultiBuffer) error {
+	for _, b := range mb {
+		if b.Len() > 0 {
+			b.Bytes = randomizeHTTPHeaderKeys(b.Bytes)
+		}
+	}
+	return w.writer.WriteMultiBuffer(mb)
 }
