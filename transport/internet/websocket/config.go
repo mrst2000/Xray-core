@@ -7,6 +7,7 @@ import (
 	"unicode"
 
 	"github.com/mrst2000/Xray-core/common"
+	"github.com/mrst2000/Xray-core/internet"
 )
 
 // The 'protocolName' const is removed from here because it's already

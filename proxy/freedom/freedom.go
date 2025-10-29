@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"unicode"
 	mathrand "math/rand"
-	"strings"
 
 	"github.com/pires/go-proxyproto"
 	"github.com/mrst2000/Xray-core/common"
