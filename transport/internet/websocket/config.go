@@ -7,7 +7,7 @@ import (
 	"unicode"
 
 	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/internet"
+	"github.com/mrst2000/Xray-core/transport/internet" // This is the corrected import path
 )
 
 // The 'protocolName' const is removed from here because it's already
@@ -24,7 +24,6 @@ var mobileUserAgents = []string{
 
 // getRandomMobileUserAgent selects a random user agent from the mobileUserAgents list.
 func getRandomMobileUserAgent() string {
-	// Seeding with a new source to improve randomness over time.
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return mobileUserAgents[r.Intn(len(mobileUserAgents))]
 }
@@ -43,8 +42,6 @@ func (c *Config) GetNormalizedPath() string {
 
 func (c *Config) GetRequestHeader() http.Header {
 	header := http.Header{}
-	// FIX: The loop is changed to iterate over a map[string]string,
-	// which matches the new structure of c.Header.
 	for key, value := range c.Header {
 		header.Set(key, value)
 	}
