@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/xtls/xray-core/common/crypto"
-	"github.com/xtls/xray-core/common/errors"
+	"github.com/mrst2000/Xray-core/common/crypto"
+	"github.com/mrst2000/Xray-core/common/errors"
 	"lukechampine.com/blake3"
 )
 

@@ -1,12 +1,12 @@
 package mux
 
 import (
-	"github.com/xtls/xray-core/common"
-	"github.com/xtls/xray-core/common/buf"
-	"github.com/xtls/xray-core/common/net"
-	"github.com/xtls/xray-core/common/protocol"
-	"github.com/xtls/xray-core/common/serial"
-	"github.com/xtls/xray-core/common/session"
+	"github.com/mrst2000/Xray-core/common"
+	"github.com/mrst2000/Xray-core/common/buf"
+	"github.com/mrst2000/Xray-core/common/net"
+	"github.com/mrst2000/Xray-core/common/protocol"
+	"github.com/mrst2000/Xray-core/common/serial"
+	"github.com/mrst2000/Xray-core/common/session"
 )
 
 type Writer struct {

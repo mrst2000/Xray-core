@@ -3,15 +3,15 @@ package conf
 import (
 	"sort"
 
-	"github.com/xtls/xray-core/common/errors"
-	"github.com/xtls/xray-core/transport/internet/headers/dns"
-	"github.com/xtls/xray-core/transport/internet/headers/http"
-	"github.com/xtls/xray-core/transport/internet/headers/noop"
-	"github.com/xtls/xray-core/transport/internet/headers/srtp"
-	"github.com/xtls/xray-core/transport/internet/headers/tls"
-	"github.com/xtls/xray-core/transport/internet/headers/utp"
-	"github.com/xtls/xray-core/transport/internet/headers/wechat"
-	"github.com/xtls/xray-core/transport/internet/headers/wireguard"
+	"github.com/mrst2000/Xray-core/common/errors"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/dns"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/http"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/noop"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/srtp"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/tls"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/utp"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/wechat"
+	"github.com/mrst2000/Xray-core/transport/internet/headers/wireguard"
 	"google.golang.org/protobuf/proto"
 )
 

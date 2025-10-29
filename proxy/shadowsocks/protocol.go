@@ -8,13 +8,13 @@ import (
 	"hash/crc32"
 	"io"
 
-	"github.com/xtls/xray-core/common"
-	"github.com/xtls/xray-core/common/buf"
-	"github.com/xtls/xray-core/common/crypto"
-	"github.com/xtls/xray-core/common/drain"
-	"github.com/xtls/xray-core/common/errors"
-	"github.com/xtls/xray-core/common/net"
-	"github.com/xtls/xray-core/common/protocol"
+	"github.com/mrst2000/Xray-core/common"
+	"github.com/mrst2000/Xray-core/common/buf"
+	"github.com/mrst2000/Xray-core/common/crypto"
+	"github.com/mrst2000/Xray-core/common/drain"
+	"github.com/mrst2000/Xray-core/common/errors"
+	"github.com/mrst2000/Xray-core/common/net"
+	"github.com/mrst2000/Xray-core/common/protocol"
 )
 
 const (

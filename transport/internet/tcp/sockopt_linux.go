@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/xtls/xray-core/common/errors"
-	"github.com/xtls/xray-core/common/net"
-	"github.com/xtls/xray-core/transport/internet/stat"
+	"github.com/mrst2000/Xray-core/common/errors"
+	"github.com/mrst2000/Xray-core/common/net"
+	"github.com/mrst2000/Xray-core/transport/internet/stat"
 )
 
 const SO_ORIGINAL_DST = 80

@@ -5,10 +5,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/xtls/xray-core/common"
-	"github.com/xtls/xray-core/common/session"
-	"github.com/xtls/xray-core/transport"
-	"github.com/xtls/xray-core/transport/internet"
+	"github.com/mrst2000/Xray-core/common"
+	"github.com/mrst2000/Xray-core/common/session"
+	"github.com/mrst2000/Xray-core/transport"
+	"github.com/mrst2000/Xray-core/transport/internet"
 )
 
 // Handler is an outbound connection that silently swallow the entire payload.

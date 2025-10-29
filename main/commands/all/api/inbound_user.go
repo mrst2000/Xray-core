@@ -1,8 +1,8 @@
 package api
 
 import (
-	handlerService "github.com/xtls/xray-core/app/proxyman/command"
-	"github.com/xtls/xray-core/main/commands/base"
+	handlerService "github.com/mrst2000/Xray-core/app/proxyman/command"
+	"github.com/mrst2000/Xray-core/main/commands/base"
 )
 
 var cmdInboundUser = &base.Command{
