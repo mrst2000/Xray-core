@@ -10,14 +10,14 @@ import (
 	"time"
 
 	"github.com/quic-go/quic-go"
-	"github.com/mrst2000/Xray-core/common/buf"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/log"
-	"github.com/mrst2000/Xray-core/common/net"
-	"github.com/mrst2000/Xray-core/common/protocol/dns"
-	"github.com/mrst2000/Xray-core/common/session"
-	dns_feature "github.com/mrst2000/Xray-core/features/dns"
-	"github.com/mrst2000/Xray-core/transport/internet/tls"
+	"github.com/xtls/xray-core/common/buf"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/log"
+	"github.com/xtls/xray-core/common/net"
+	"github.com/xtls/xray-core/common/protocol/dns"
+	"github.com/xtls/xray-core/common/session"
+	dns_feature "github.com/xtls/xray-core/features/dns"
+	"github.com/xtls/xray-core/transport/internet/tls"
 	"golang.org/x/net/http2"
 )
 

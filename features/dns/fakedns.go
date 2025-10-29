@@ -1,8 +1,8 @@
 package dns
 
 import (
-	"github.com/mrst2000/Xray-core/common/net"
-	"github.com/mrst2000/Xray-core/features"
+	"github.com/xtls/xray-core/common/net"
+	"github.com/xtls/xray-core/features"
 )
 
 type FakeDNSEngine interface {

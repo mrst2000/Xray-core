@@ -7,7 +7,7 @@
 package trojan
 
 import (
-	protocol "github.com/mrst2000/Xray-core/common/protocol"
+	protocol "github.com/xtls/xray-core/common/protocol"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

@@ -1,4 +1,4 @@
-package protocol // import "github.com/mrst2000/Xray-core/common/protocol"
+package protocol // import "github.com/xtls/xray-core/common/protocol"
 
 import (
 	"errors"

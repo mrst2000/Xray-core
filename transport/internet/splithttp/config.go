@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/crypto"
-	"github.com/mrst2000/Xray-core/transport/internet"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/crypto"
+	"github.com/xtls/xray-core/transport/internet"
 )
 
 func (c *Config) GetNormalizedPath() string {

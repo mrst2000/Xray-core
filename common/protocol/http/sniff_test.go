@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	. "github.com/mrst2000/Xray-core/common/protocol/http"
+	. "github.com/xtls/xray-core/common/protocol/http"
 )
 
 func TestHTTPHeaders(t *testing.T) {

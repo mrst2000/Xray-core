@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	. "github.com/mrst2000/Xray-core/app/stats"
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/features/stats"
+	. "github.com/xtls/xray-core/app/stats"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/features/stats"
 )
 
 func TestStatsCounter(t *testing.T) {

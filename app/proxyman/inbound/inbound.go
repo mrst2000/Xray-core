@@ -4,14 +4,14 @@ import (
 	"context"
 	"sync"
 
-	"github.com/mrst2000/Xray-core/app/proxyman"
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/net"
-	"github.com/mrst2000/Xray-core/common/serial"
-	"github.com/mrst2000/Xray-core/common/session"
-	"github.com/mrst2000/Xray-core/core"
-	"github.com/mrst2000/Xray-core/features/inbound"
+	"github.com/xtls/xray-core/app/proxyman"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/net"
+	"github.com/xtls/xray-core/common/serial"
+	"github.com/xtls/xray-core/common/session"
+	"github.com/xtls/xray-core/core"
+	"github.com/xtls/xray-core/features/inbound"
 )
 
 // Manager manages all inbound handlers.

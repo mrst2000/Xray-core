@@ -7,7 +7,7 @@
 package protocol
 
 import (
-	serial "github.com/mrst2000/Xray-core/common/serial"
+	serial "github.com/xtls/xray-core/common/serial"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

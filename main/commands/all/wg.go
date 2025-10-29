@@ -1,7 +1,7 @@
 package all
 
 import (
-	"github.com/mrst2000/Xray-core/main/commands/base"
+	"github.com/xtls/xray-core/main/commands/base"
 )
 
 var cmdWG = &base.Command{

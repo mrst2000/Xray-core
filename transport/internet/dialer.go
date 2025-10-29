@@ -6,17 +6,17 @@ import (
 	gonet "net"
 	"strings"
 
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/dice"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/net"
-	"github.com/mrst2000/Xray-core/common/net/cnc"
-	"github.com/mrst2000/Xray-core/common/session"
-	"github.com/mrst2000/Xray-core/features/dns"
-	"github.com/mrst2000/Xray-core/features/outbound"
-	"github.com/mrst2000/Xray-core/transport"
-	"github.com/mrst2000/Xray-core/transport/internet/stat"
-	"github.com/mrst2000/Xray-core/transport/pipe"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/dice"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/net"
+	"github.com/xtls/xray-core/common/net/cnc"
+	"github.com/xtls/xray-core/common/session"
+	"github.com/xtls/xray-core/features/dns"
+	"github.com/xtls/xray-core/features/outbound"
+	"github.com/xtls/xray-core/transport"
+	"github.com/xtls/xray-core/transport/internet/stat"
+	"github.com/xtls/xray-core/transport/pipe"
 )
 
 // Dialer is the interface for dialing outbound connections.

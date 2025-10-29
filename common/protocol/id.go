@@ -3,8 +3,8 @@ package protocol
 import (
 	"crypto/md5"
 
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/uuid"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/uuid"
 )
 
 const (

@@ -7,8 +7,8 @@
 package shadowsocks
 
 import (
-	net "github.com/mrst2000/Xray-core/common/net"
-	protocol "github.com/mrst2000/Xray-core/common/protocol"
+	net "github.com/xtls/xray-core/common/net"
+	protocol "github.com/xtls/xray-core/common/protocol"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

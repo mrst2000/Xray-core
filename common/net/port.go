@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"strconv"
 
-	"github.com/mrst2000/Xray-core/common/errors"
+	"github.com/xtls/xray-core/common/errors"
 )
 
 // Port represents a network port in TCP and UDP protocol.

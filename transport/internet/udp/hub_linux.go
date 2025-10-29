@@ -6,7 +6,7 @@ package udp
 import (
 	"syscall"
 
-	"github.com/mrst2000/Xray-core/common/net"
+	"github.com/xtls/xray-core/common/net"
 	"golang.org/x/sys/unix"
 )
 

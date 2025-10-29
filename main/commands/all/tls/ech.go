@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/xtls/reality/hpke"
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/main/commands/base"
-	"github.com/mrst2000/Xray-core/transport/internet/tls"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/main/commands/base"
+	"github.com/xtls/xray-core/transport/internet/tls"
 	"golang.org/x/crypto/cryptobyte"
 )
 

@@ -2,8 +2,8 @@ package version
 
 import (
 	"context"
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/errors"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/errors"
 	"strconv"
 	"strings"
 )

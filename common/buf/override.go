@@ -1,7 +1,7 @@
 package buf
 
 import (
-	"github.com/mrst2000/Xray-core/common/net"
+	"github.com/xtls/xray-core/common/net"
 )
 
 type EndpointOverrideReader struct {

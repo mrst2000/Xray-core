@@ -5,14 +5,14 @@ import (
 
 	"sync"
 
-	"github.com/mrst2000/Xray-core/app/observatory"
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/signal/done"
-	"github.com/mrst2000/Xray-core/core"
-	"github.com/mrst2000/Xray-core/features/extension"
-	"github.com/mrst2000/Xray-core/features/outbound"
-	"github.com/mrst2000/Xray-core/features/routing"
+	"github.com/xtls/xray-core/app/observatory"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/signal/done"
+	"github.com/xtls/xray-core/core"
+	"github.com/xtls/xray-core/features/extension"
+	"github.com/xtls/xray-core/features/outbound"
+	"github.com/xtls/xray-core/features/routing"
 	"google.golang.org/protobuf/proto"
 )
 

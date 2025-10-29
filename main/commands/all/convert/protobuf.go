@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mrst2000/Xray-core/common/cmdarg"
-	creflect "github.com/mrst2000/Xray-core/common/reflect"
-	"github.com/mrst2000/Xray-core/core"
-	"github.com/mrst2000/Xray-core/main/commands/base"
+	"github.com/xtls/xray-core/common/cmdarg"
+	creflect "github.com/xtls/xray-core/common/reflect"
+	"github.com/xtls/xray-core/core"
+	"github.com/xtls/xray-core/main/commands/base"
 
 	"google.golang.org/protobuf/proto"
 )

@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/task"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/task"
 )
 
 func TestGenerate(t *testing.T) {

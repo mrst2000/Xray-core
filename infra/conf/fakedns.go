@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/mrst2000/Xray-core/app/dns/fakedns"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/features/dns"
+	"github.com/xtls/xray-core/app/dns/fakedns"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/features/dns"
 )
 
 type FakeDNSPoolElementConfig struct {

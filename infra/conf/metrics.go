@@ -1,8 +1,8 @@
 package conf
 
 import (
-	"github.com/mrst2000/Xray-core/app/metrics"
-	"github.com/mrst2000/Xray-core/common/errors"
+	"github.com/xtls/xray-core/app/metrics"
+	"github.com/xtls/xray-core/common/errors"
 )
 
 type MetricsConfig struct {

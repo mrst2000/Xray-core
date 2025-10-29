@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/protocol"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/protocol"
 	"lukechampine.com/blake3"
 )
 

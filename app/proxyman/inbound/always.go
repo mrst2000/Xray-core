@@ -3,17 +3,17 @@ package inbound
 import (
 	"context"
 
-	"github.com/mrst2000/Xray-core/app/proxyman"
-	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/common/errors"
-	"github.com/mrst2000/Xray-core/common/mux"
-	"github.com/mrst2000/Xray-core/common/net"
-	"github.com/mrst2000/Xray-core/common/serial"
-	"github.com/mrst2000/Xray-core/core"
-	"github.com/mrst2000/Xray-core/features/policy"
-	"github.com/mrst2000/Xray-core/features/stats"
-	"github.com/mrst2000/Xray-core/proxy"
-	"github.com/mrst2000/Xray-core/transport/internet"
+	"github.com/xtls/xray-core/app/proxyman"
+	"github.com/xtls/xray-core/common"
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/mux"
+	"github.com/xtls/xray-core/common/net"
+	"github.com/xtls/xray-core/common/serial"
+	"github.com/xtls/xray-core/core"
+	"github.com/xtls/xray-core/features/policy"
+	"github.com/xtls/xray-core/features/stats"
+	"github.com/xtls/xray-core/proxy"
+	"github.com/xtls/xray-core/transport/internet"
 	"google.golang.org/protobuf/proto"
 )
 
