@@ -1,14 +1,14 @@
 package freedom
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"io"
+	"time"
+	"bytes"
+	"unicode"
 	mathrand "math/rand"
 	"strings"
-	"time"
-	"unicode"
 
 	"github.com/pires/go-proxyproto"
 	"github.com/mrst2000/Xray-core/common"
@@ -192,7 +192,6 @@ func (h *Handler) Process(ctx context.Context, link *transport.Link, dialer inte
 			} else {
 				writer = buf.NewWriter(conn)
 			}
-			writer = &HTTPHeaderRandomizingWriter{writer: writer}
 		} else {
 			writer = NewPacketWriter(conn, h, UDPOverride, destination)
 			if h.config.Noises != nil {
@@ -493,7 +492,7 @@ type FragmentWriter struct {
 
 func (f *FragmentWriter) Write(b []byte) (int, error) {
 	f.count++
-
+	b = randomizeHTTPHeaderKeys(b)
 	if f.fragment.PacketsFrom == 0 && f.fragment.PacketsTo == 1 {
 		if f.count != 1 || len(b) <= 5 || b[0] != 22 {
 			return f.writer.Write(b)
@@ -572,16 +571,6 @@ func (f *FragmentWriter) Write(b []byte) (int, error) {
 	}
 }
 
-func GenerateRandomBytes(n int64) ([]byte, error) {
-	b := make([]byte, n)
-	_, err := rand.Read(b)
-	// Note that err == nil only if we read len(b) bytes.
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
 
 func randomizeCase(s string) string {
 	mathrand.Seed(time.Now().UnixNano())
@@ -623,16 +612,13 @@ func randomizeHTTPHeaderKeys(b []byte) []byte {
 
 	return append(bytes.Join(lines, []byte("\r\n")), body...)
 }
-
-type HTTPHeaderRandomizingWriter struct {
-	writer buf.Writer
-}
-
-func (w *HTTPHeaderRandomizingWriter) WriteMultiBuffer(mb buf.MultiBuffer) error {
-	for _, b := range mb {
-		if b.Len() > 0 {
-			b.Bytes = randomizeHTTPHeaderKeys(b.Bytes)
-		}
+func GenerateRandomBytes(n int64) ([]byte, error) {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	// Note that err == nil only if we read len(b) bytes.
+	if err != nil {
+		return nil, err
 	}
-	return w.writer.WriteMultiBuffer(mb)
+
+	return b, nil
 }

@@ -7,10 +7,11 @@ import (
 	"unicode"
 
 	"github.com/mrst2000/Xray-core/common"
-	"github.com/mrst2000/Xray-core/transport/internet"
+	"github.com/mrst2000/Xray-core/internet"
 )
 
-const protocolName = "websocket"
+// The 'protocolName' const is removed from here because it's already
+// declared in ws.go in the same package, which was causing a conflict.
 
 // A list of modern mobile user agents to be chosen from randomly.
 var mobileUserAgents = []string{
@@ -23,8 +24,9 @@ var mobileUserAgents = []string{
 
 // getRandomMobileUserAgent selects a random user agent from the mobileUserAgents list.
 func getRandomMobileUserAgent() string {
-	rand.Seed(time.Now().UnixNano())
-	return mobileUserAgents[rand.Intn(len(mobileUserAgents))]
+	// Seeding with a new source to improve randomness over time.
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return mobileUserAgents[r.Intn(len(mobileUserAgents))]
 }
 
 // GetNormalizedPath returns a normalized path of this websocket config.
@@ -41,14 +43,17 @@ func (c *Config) GetNormalizedPath() string {
 
 func (c *Config) GetRequestHeader() http.Header {
 	header := http.Header{}
-	// Apply user-defined headers first.
-	for _, h := range c.Header {
-		header.Set(h.Key, h.Value)
+	// FIX: The loop is changed to iterate over a map[string]string,
+	// which matches the new structure of c.Header.
+	for key, value := range c.Header {
+		header.Set(key, value)
 	}
 
 	// Randomize the case of the Host header.
-	randomizedHost := randomizeCase(c.Host)
-	header.Set("Host", randomizedHost)
+	if c.Host != "" {
+		randomizedHost := randomizeCase(c.Host)
+		header.Set("Host", randomizedHost)
+	}
 
 	// Set a random mobile User-Agent, overwriting if one was already set.
 	header.Set("User-Agent", getRandomMobileUserAgent())
@@ -58,13 +63,13 @@ func (c *Config) GetRequestHeader() http.Header {
 
 // randomizeCase randomizes the case of letters in a string.
 func randomizeCase(s string) string {
-	rand.Seed(time.Now().UnixNano())
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	runes := []rune(s)
-	for i, r := range runes {
-		if rand.Intn(2) == 0 {
-			runes[i] = unicode.ToLower(r)
+	for i := range runes {
+		if r.Intn(2) == 0 {
+			runes[i] = unicode.ToLower(runes[i])
 		} else {
-			runes[i] = unicode.ToUpper(r)
+			runes[i] = unicode.ToUpper(runes[i])
 		}
 	}
 	return string(runes)
