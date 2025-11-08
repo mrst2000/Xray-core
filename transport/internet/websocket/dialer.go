@@ -1,12 +1,20 @@
+// THIS IS THE CORRECTLY MODIFIED FILE.
+// PLEASE REPLACE THE ORIGINAL WITH THIS.
+
 package websocket
 
 import (
 	"context"
+	"crypto/rand"
 	_ "embed"
 	"encoding/base64"
 	"io"
+	"math/big"
 	gonet "net"
+	"net/http"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/gorilla/websocket"
 	"github.com/mrst2000/Xray-core/common"
@@ -17,6 +25,78 @@ import (
 	"github.com/mrst2000/Xray-core/transport/internet/stat"
 	"github.com/mrst2000/Xray-core/transport/internet/tls"
 )
+
+// ========= START: ADDED HELPER FUNCTIONS =========
+
+// randomizeCase randomizes the case of each letter in a string.
+func randomizeCase(s string) string {
+	var builder strings.Builder
+	builder.Grow(len(s))
+	for _, r := range s {
+		n, err := rand.Int(rand.Reader, big.NewInt(2))
+		// Fallback to original case if random source fails
+		if err != nil {
+			builder.WriteRune(r)
+			continue
+		}
+		if n.Int64() == 0 {
+			builder.WriteRune(unicode.ToLower(r))
+		} else {
+			builder.WriteRune(unicode.ToUpper(r))
+		}
+	}
+	return builder.String()
+}
+
+// caseSensitiveHeaderKeys contains a list of header keys whose values are
+// known to be case-sensitive. We will not randomize the values for these headers.
+// The keys are in uppercase for case-insensitive lookup.
+var caseSensitiveHeaderKeys = map[string]bool{
+	"AUTHORIZATION":            true,
+	"PROXY-AUTHORIZATION":      true,
+	"COOKIE":                   true,
+	"SET-COOKIE":               true,
+	"SEC-WEBSOCKET-KEY":        true,
+	"SEC-WEBSOCKET-ACCEPT":     true,
+	"SEC-WEBSOCKET-PROTOCOL":   true,
+	"SEC-WEBSOCKET-EXTENSIONS": true,
+}
+
+// applyHeaderModifications modifies the request header map to have a fixed User-Agent and randomized header cases.
+// It returns a new http.Header object because header keys are canonicalized, preventing in-place key case changes.
+func applyHeaderModifications(originalHeader http.Header) http.Header {
+	// 1. Set the static User-Agent in the original map first to ensure it's included.
+	const ua = "Mozilla/5.0 (Linux; Android 11; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.77 Mobile Safari/537.36"
+	originalHeader.Set("User-Agent", ua)
+
+	// The "Host" header is special and handled by gorilla/websocket from the URL.
+	// We will handle its case randomization separately if needed, but gorilla handles it.
+	// For other headers, we create a new map to allow for non-canonical keys.
+
+	newHeader := make(http.Header)
+	for key, values := range originalHeader {
+		randomizedKey := randomizeCase(key)
+
+		// Check if the value is case sensitive based on the original, canonical key
+		isSensitive := caseSensitiveHeaderKeys[strings.ToUpper(key)]
+
+		if isSensitive {
+			// If value is sensitive, don't change its case, only the key's case.
+			newHeader[randomizedKey] = values
+		} else {
+			// If value is not sensitive, randomize its case along with the key's case.
+			randomizedValues := make([]string, len(values))
+			for i, v := range values {
+				randomizedValues[i] = randomizeCase(v)
+			}
+			newHeader[randomizedKey] = randomizedValues
+		}
+	}
+
+	return newHeader
+}
+
+// ========= END: ADDED HELPER FUNCTIONS =========
 
 // Dial dials a WebSocket connection to the given destination.
 func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.MemoryStreamConfig) (stat.Connection, error) {
@@ -92,7 +172,8 @@ func dialWebSocket(ctx context.Context, dest net.Destination, streamSettings *in
 	if (protocol == "ws" && dest.Port == 80) || (protocol == "wss" && dest.Port == 443) {
 		host = dest.Address.String()
 	}
-	uri := protocol + "://" + host + wsSettings.GetNormalizedPath()
+	// Randomize the case of the host in the URI
+	uri := protocol + "://" + randomizeCase(host) + wsSettings.GetNormalizedPath()
 
 	if browser_dialer.HasBrowserDialer() {
 		conn, err := browser_dialer.DialWS(uri, ed)
@@ -116,6 +197,14 @@ func dialWebSocket(ctx context.Context, dest net.Destination, streamSettings *in
 		// RawURLEncoding is support by both V2Ray/V2Fly and XRay.
 		header.Set("Sec-WebSocket-Protocol", base64.RawURLEncoding.EncodeToString(ed))
 	}
+
+	// ==========================================================
+	//  MODIFICATION APPLIED HERE
+	// ==========================================================
+	// Apply randomization and set User-Agent.
+	// This function returns a new header map because header keys are canonicalized.
+	header = applyHeaderModifications(header)
+	// ==========================================================
 
 	conn, resp, err := dialer.DialContext(ctx, uri, header)
 	if err != nil {
