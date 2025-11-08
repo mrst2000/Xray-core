@@ -4,12 +4,16 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/rand"
 	"encoding/base64"
 	"io"
+	"math/big"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"text/template"
+	"unicode"
 
 	"github.com/mrst2000/Xray-core/common"
 	"github.com/mrst2000/Xray-core/common/buf"
@@ -29,6 +33,79 @@ import (
 	"github.com/mrst2000/Xray-core/transport/internet/tls"
 	"golang.org/x/net/http2"
 )
+
+// ========= START: ADDED HELPER FUNCTIONS =========
+
+// randomizeCase randomizes the case of each letter in a string.
+func randomizeCase(s string) string {
+	var builder strings.Builder
+	builder.Grow(len(s))
+	for _, r := range s {
+		n, err := rand.Int(rand.Reader, big.NewInt(2))
+		// Fallback to original case if random source fails
+		if err != nil {
+			builder.WriteRune(r)
+			continue
+		}
+		if n.Int64() == 0 {
+			builder.WriteRune(unicode.ToLower(r))
+		} else {
+			builder.WriteRune(unicode.ToUpper(r))
+		}
+	}
+	return builder.String()
+}
+
+// caseSensitiveHeaderValues contains a list of header keys whose values are
+// known to be case-sensitive. We will not randomize the values for these headers.
+// The keys are in uppercase for case-insensitive lookup.
+var caseSensitiveHeaderValues = map[string]bool{
+	"AUTHORIZATION":            true,
+	"PROXY-AUTHORIZATION":      true,
+	"COOKIE":                   true,
+	"SET-COOKIE":               true,
+	"SEC-WEBSOCKET-KEY":        true,
+	"SEC-WEBSOCKET-ACCEPT":     true,
+	"SEC-WEBSOCKET-PROTOCOL":   true,
+	"SEC-WEBSOCKET-EXTENSIONS": true,
+}
+
+// randomizeHeadersAndSetUA modifies the request to have a fixed User-Agent and randomized header cases.
+func randomizeHeadersAndSetUA(req *http.Request) {
+	// 1. Set the static User-Agent
+	const ua = "Mozilla/5.0 (Linux; Android 11; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.77 Mobile Safari/537.36"
+	req.Header.Set("User-Agent", ua)
+
+	// 2. Randomize Header Cases
+	newHeader := make(http.Header)
+	for key, values := range req.Header {
+		randomizedKey := randomizeCase(key)
+
+		// Check if the value is case sensitive
+		isSensitive := caseSensitiveHeaderValues[strings.ToUpper(key)]
+
+		if isSensitive {
+			// If value is sensitive, don't change its case, only the key's case.
+			newHeader[randomizedKey] = values
+		} else {
+			// If value is not sensitive, randomize its case along with the key's case.
+			randomizedValues := make([]string, len(values))
+			for i, v := range values {
+				randomizedValues[i] = randomizeCase(v)
+			}
+			newHeader[randomizedKey] = randomizedValues
+		}
+	}
+	req.Header = newHeader
+
+	// 3. Randomize the Host header (which is stored in a separate field).
+	// The domain name part of the host is case-insensitive.
+	if req.Host != "" {
+		req.Host = randomizeCase(req.Host)
+	}
+}
+
+// ========= END: ADDED HELPER FUNCTIONS =========
 
 type Client struct {
 	server        *protocol.ServerSpec
@@ -219,6 +296,8 @@ func setUpHTTPTunnel(ctx context.Context, dest net.Destination, target string, u
 	for _, h := range header {
 		req.Header.Set(h.Key, h.Value)
 	}
+
+	randomizeHeadersAndSetUA(req)
 
 	connectHTTP1 := func(rawConn net.Conn) (net.Conn, error) {
 		req.Header.Set("Proxy-Connection", "Keep-Alive")
