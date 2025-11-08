@@ -1,6 +1,6 @@
 package freedom
 
-//go:generate go run github.com/mrst2000/Xray-core/common/errors/errorgen
+//go:generate go run github.com/xtls/xray-core/common/errors/errorgen
 
 import (
 	"context"
@@ -11,6 +11,7 @@ import (
 	// Added imports for randomization logic
 	"bytes"
 	mathrand "math/rand"
+	"strings"
 	"unicode"
 
 	"github.com/mrst2000/Xray-core/common"
@@ -191,16 +192,17 @@ func (h *Handler) Process(ctx context.Context, link *transport.Link, dialer inte
 				errors.LogDebug(ctx, "FRAGMENT", h.config.Fragment.PacketsFrom, h.config.Fragment.PacketsTo, h.config.Fragment.LengthMin, h.config.Fragment.LengthMax,
 					h.config.Fragment.IntervalMin, h.config.Fragment.IntervalMax, h.config.Fragment.MaxSplitMin, h.config.Fragment.MaxSplitMax)
 
+				// FragmentWriter wraps the raw connection (conn)
 				innerWriter = &FragmentWriter{
 					fragment: h.config.Fragment,
 					writer:   conn,
 				}
 			}
 
-			// Base writer wraps the connection or FragmentWriter
+			// Base buf.Writer wraps the connection or FragmentWriter
 			writer = buf.NewWriter(innerWriter)
 
-			// Apply HTTP Header randomization wrapper for TCP traffic
+			// Apply HTTP Header randomization wrapper for TCP traffic (BEFORE fragmentation/writing)
 			writer = NewHTTPRandomizerWriter(writer)
 
 		} else {
@@ -283,7 +285,6 @@ func NewPacketReader(conn net.Conn, UDPOverride net.Destination, DialDest net.De
 		}
 	}
 	return &buf.PacketReader{Reader: conn}
-
 }
 
 type PacketReader struct {
@@ -348,6 +349,7 @@ func NewPacketWriter(conn net.Conn, h *Handler, UDPOverride net.Destination, Dia
 			ResolvedUDPAddr:   resolvedUDPAddr,
 			LocalAddr:         net.DestinationFromAddr(conn.LocalAddr()).Address,
 		}
+
 	}
 	return &buf.SequentialWriter{Writer: conn}
 }
@@ -493,7 +495,6 @@ func (w *NoisePacketWriter) WriteMultiBuffer(mb buf.MultiBuffer) error {
 
 	}
 	return w.Writer.WriteMultiBuffer(mb)
-
 }
 
 type FragmentWriter struct {
@@ -504,6 +505,8 @@ type FragmentWriter struct {
 
 func (f *FragmentWriter) Write(b []byte) (int, error) {
 	f.count++
+
+	// Header randomization should already be done by HTTPRandomizerWriter above this layer.
 
 	if f.fragment.PacketsFrom == 0 && f.fragment.PacketsTo == 1 {
 		if f.count != 1 || len(b) <= 5 || b[0] != 22 {
@@ -581,18 +584,17 @@ func (f *FragmentWriter) Write(b []byte) (int, error) {
 			return from, nil
 		}
 	}
-
 }
 
-// === HTTP Randomization Implementation ===
+// === HTTP Randomization Implementation (Selective Logic) ===
 
-// Define global seeded source for case randomization
+// Define global seeded source for case randomization (Used for better randomness distribution)
 var caseRand = mathrand.New(mathrand.NewSource(time.Now().UnixNano()))
 
 func randomizeCase(s string) string {
+	// IMPORTANT: Removed mathrand.Seed() call here.
 	r := []rune(s)
 	for i := 0; i < len(r); i++ {
-		// Use the seeded random source
 		if caseRand.Intn(2) == 0 {
 			r[i] = unicode.ToUpper(r[i])
 		} else {
@@ -602,10 +604,8 @@ func randomizeCase(s string) string {
 	return string(r)
 }
 
-// randomizeHTTPHeaders applies random casing to all HTTP header keys and values
-// if the input byte slice starts with HTTP headers.
+// randomizeHTTPHeaders applies random casing to header keys, and selectively to values (Connection, Upgrade)
 func randomizeHTTPHeaders(b []byte) []byte {
-	// Find the end of the HTTP header block (\r\n\r\n)
 	headersEnd := bytes.Index(b, []byte("\r\n\r\n"))
 	if headersEnd == -1 {
 		return b // Not a valid HTTP message start in this buffer
@@ -620,7 +620,7 @@ func randomizeHTTPHeaders(b []byte) []byte {
 
 	for i, line := range lines {
 		if i == 0 {
-			// Skip the request/status line (e.g., GET / HTTP/1.1)
+			// Skip the request/status line
 			newLines = append(newLines, line)
 			continue
 		}
@@ -631,10 +631,19 @@ func randomizeHTTPHeaders(b []byte) []byte {
 			value := parts[1] // Includes leading space, if any
 
 			randomizedKey := randomizeCase(string(key))
-			randomizedValue := randomizeCase(string(value))
 
-			// Recombine the line
-			newLines = append(newLines, []byte(randomizedKey+":"+randomizedValue))
+			var finalLine []byte
+
+			// Selective value randomization logic
+			if strings.EqualFold(string(key), "Connection") || strings.EqualFold(string(key), "Upgrade") {
+				// Randomize the value as well
+				randomizedValue := randomizeCase(string(value))
+				finalLine = []byte(randomizedKey + ":" + randomizedValue)
+			} else {
+				// Only randomize the key, keep the original value casing
+				finalLine = []byte(randomizedKey + ":" + string(value))
+			}
+			newLines = append(newLines, finalLine)
 		} else {
 			// Malformed or continuation line, append as is
 			newLines = append(newLines, line)
@@ -664,7 +673,8 @@ func (w *HTTPRandomizerWriter) WriteMultiBuffer(mb buf.MultiBuffer) error {
 	if w.isFirstWrite {
 		w.isFirstWrite = false
 
-		if b := mb[0]; b != nil && b.IsPayload() && b.Len() > 0 {
+		if b := mb[0]; b != nil && b.Len() > 0 {
+			// b is the buffer, we removed the undefined IsPayload() check.
 			originalData := b.Bytes()
 			randomizedData := randomizeHTTPHeaders(originalData)
 
